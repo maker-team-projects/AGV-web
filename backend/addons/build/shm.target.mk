@@ -91,7 +91,7 @@ INCS_Release := \
 	-I/home/dysprosium/.cache/node-gyp/22.12.0/deps/v8/include
 
 OBJS := \
-	$(obj).target/$(TARGET)/shared_memory.o
+	$(obj).target/$(TARGET)/just_read.o
 
 # Add to the list of files we specially track dependencies for.
 all_deps += $(OBJS)

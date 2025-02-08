@@ -1,5 +1,7 @@
 #include <node.h>
 #include <iostream>
+#include <vector>
+#include <string>
 
 #include <sys/shm.h>
 #include <sys/sem.h>
@@ -10,8 +12,8 @@
 #include <stdio.h>
 
 using namespace std;
-
 using namespace v8;
+
 using v8::FunctionCallbackInfo;
 using v8::Isolate;
 using v8::Local;
@@ -31,16 +33,8 @@ union semun_arg {
 
 struct SharedData {
     int seq_number;
-    int valid;  // 상태 플래그 추가
     char message[SHM_SIZE - sizeof(int) * 2];
 };
-
-void Settings(int index);
-char *Data_receive(int index);
-bool is_base64( unsigned char c );
-string base64_decode(string const& encoded_string);
-void Exit(int signum);
-void Exit();
 
 SharedData *shared_mem[MEMORY_N];
 int shm_key[MEMORY_N] = {1232};
@@ -54,6 +48,7 @@ static const string base64_chars =
 "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 "abcdefghijklmnopqrstuvwxyz"
 "0123456789+/";
+
 
 void Settings(const FunctionCallbackInfo<Value>& args){
     Isolate* isolate = args.GetIsolate();
@@ -137,9 +132,8 @@ void Data_receive(const FunctionCallbackInfo<Value>& args){
         exit(1);
     }
 
-    if (shared_mem[index]->valid == 1 && shared_mem[index]->seq_number != last_seq_number[index]) {
+    if (shared_mem[index]->seq_number != last_seq_number[index]) {
         last_seq_number[index] = shared_mem[index]->seq_number;
-        shared_mem[index]->valid = 0; 
     }
 
     // V 연산 수행
@@ -147,7 +141,6 @@ void Data_receive(const FunctionCallbackInfo<Value>& args){
         perror("semop V");
         exit(1);
     }
-
     args.GetReturnValue().Set(String::NewFromUtf8(isolate, shared_mem[index]->message).ToLocalChecked());
 }
 
