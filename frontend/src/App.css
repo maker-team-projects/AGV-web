@@ -1,9 +1,28 @@
 #grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .img {
-  width: 500px;
-  height: auto;
+    width: 500px;
+    height: auto;
+}
+
+.grid-panel-high {
+    display: block;
+    height: 600px;
+}
+
+.grid-panel-low {
+    display: block;
+    height: 600px;
+    margin-top: 30px;
+}
+
+#controlBox {
+    height: 300px;
+    border-radius: 30px;
+    border: #2ecc71 5px dashed;
+    text-align: center;
+    margin: auto;
 }
